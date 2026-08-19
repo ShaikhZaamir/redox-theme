@@ -75,7 +75,7 @@ export default function Hero() {
                 },
                 {
                     clipPath: "circle(100% at 50% 50%)",
-                    duration: 2,
+                    duration: 5.0,
                     ease: "power3.out",
                 }
             );
