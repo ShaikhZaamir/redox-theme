@@ -2,22 +2,56 @@
 
 import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const clientItems = Array.from({ length: 10 });
 
 export default function Clients() {
     const sectionRef = useRef<HTMLElement>(null);
+    const introRef = useRef<HTMLDivElement>(null);
     const trackRef = useRef<HTMLDivElement>(null);
 
     useLayoutEffect(() => {
         const section = sectionRef.current;
+        const intro = introRef.current;
         const track = trackRef.current;
 
-        if (!section || !track) {
+        if (!section || !intro || !track) {
             return;
         }
 
         const ctx = gsap.context(() => {
+            // =========================================================
+            // INTRO HANGING TEXT ANIMATION
+            // =========================================================
+            const introLines =
+                intro.querySelectorAll<HTMLElement>(".client-intro-line");
+
+            gsap.fromTo(
+                introLines,
+                {
+                    y: 45,
+                    opacity: 0,
+                },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1.1,
+                    stagger: 0.12,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: intro,
+                        start: "top 80%",
+                        once: true,
+                    },
+                }
+            );
+
+            // =========================================================
+            // CLIENT CAROUSEL
+            // =========================================================
             const firstItem = track.children[0] as HTMLElement;
 
             if (!firstItem) {
@@ -55,11 +89,18 @@ export default function Clients() {
             {/* =========================================================
                 INTRO
             ========================================================= */}
-            <div className="flex justify-center text-center">
+            <div
+                ref={introRef}
+                className="flex justify-center overflow-hidden text-center"
+            >
                 <p className="max-w-[440px] text-[22px] leading-[1.25] tracking-[-0.025em] sm:text-[23px]">
-                    Help to brands growing up and show
+                    <span className="client-intro-line inline-block">
+                        Help to brands growing up and show
+                    </span>
                     <br />
-                    their success stories to the world
+                    <span className="client-intro-line inline-block">
+                        their success stories to the world
+                    </span>
                 </p>
             </div>
 
