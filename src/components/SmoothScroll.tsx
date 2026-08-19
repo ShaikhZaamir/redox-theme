@@ -10,25 +10,26 @@ gsap.registerPlugin(ScrollTrigger);
 export default function SmoothScroll() {
     useEffect(() => {
         const lenis = new Lenis({
-            duration: 1.2,
+            duration: 1.8,
             smoothWheel: true,
-            wheelMultiplier: 1,
+            wheelMultiplier: 0.85,
             touchMultiplier: 1,
+            easing: (t: number) =>
+                1 - Math.pow(1 - t, 4),
         });
 
         lenis.on("scroll", ScrollTrigger.update);
 
-        let animationFrameId: number;
-
-        const raf = (time: number) => {
+        const ticker = (time: number) => {
             lenis.raf(time * 1000);
-            animationFrameId = requestAnimationFrame(raf);
         };
 
-        animationFrameId = requestAnimationFrame(raf);
+        gsap.ticker.add(ticker);
+
+        gsap.ticker.lagSmoothing(0);
 
         return () => {
-            cancelAnimationFrame(animationFrameId);
+            gsap.ticker.remove(ticker);
             lenis.destroy();
         };
     }, []);
